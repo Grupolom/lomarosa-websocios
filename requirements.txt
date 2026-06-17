@@ -1,0 +1,8 @@
+django>=5.1
+gunicorn
+psycopg2-binary
+django-storages[s3]
+boto3
+whitenoise
+django-htmx
+python-dotenv
