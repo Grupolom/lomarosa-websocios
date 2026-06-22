@@ -37,45 +37,87 @@
   </div>
   {% endif %}
 
-  <div class="g2">
-    <div>
-      {% for post in posts %}
-      <div class="post rise">
-        <div class="post-thumb" style="background:linear-gradient(140deg,#EFCABB,#F4D7CB)">
-          {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}">{% else %}<div class="post-glyph" style="color:var(--terra)">{{ post.glyph }}</div>{% endif %}
-          <div class="post-cat">{{ post.get_category_display }}</div>
-          {% if post.has_pdf %}<div class="post-pdf">PDF</div>{% endif %}
-        </div>
-        <div class="post-body">
-          <div class="post-meta"><div class="post-av">{% if post.author %}{{ post.author.initials }}{% else %}AL{% endif %}</div><div class="post-author">{{ post.author.get_full_name|default:"Admin Lomarosa" }}</div><div class="post-date">{{ post.created_at|date:"j M Y" }}</div></div>
-          <div class="post-title">{{ post.title }}</div>
-          <div class="post-ex">{{ post.excerpt }}</div>
-          <div class="post-foot">
-            {% if post.has_pdf %}<button class="btn btn-brick" onclick="openPdf('{{ post.title|escapejs }}', '{{ post.pdf.url }}')">Ver documento</button>{% endif %}
-            {% if is_admin %}
-            <a class="btn btn-ghost" href="{% url 'post_edit' post.pk %}">✎ Editar</a>
-            <form method="post" action="{% url 'post_delete' post.pk %}" onsubmit="return confirm('¿Eliminar esta noticia?');">{% csrf_token %}<button class="btn btn-ghost" type="submit">🗑</button></form>
-            {% endif %}
-            <form method="post" action="{% url 'post_react' post.pk %}" style="margin-left:auto">{% csrf_token %}
-              <button class="react" type="submit">↑ {{ post.reactions }}</button>
-            </form>
-          </div>
+  <div class="g2" style="align-items:start">
+    {% for post in posts %}
+    <div class="post rise" style="margin-bottom:0">
+      <div class="post-thumb" style="background:linear-gradient(140deg,#EFCABB,#F4D7CB)">
+        {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}">{% else %}<div class="post-glyph" style="color:var(--terra)">{{ post.glyph }}</div>{% endif %}
+        <div class="post-cat">{{ post.get_category_display }}</div>
+        {% if post.has_pdf %}<div class="post-pdf">PDF</div>{% endif %}
+      </div>
+      <div class="post-body">
+        <div class="post-meta"><div class="post-av">{% if post.author %}{{ post.author.initials }}{% else %}AL{% endif %}</div><div class="post-author">{{ post.author.get_full_name|default:"Admin Lomarosa" }}</div><div class="post-date">{{ post.created_at|date:"j M Y" }}</div></div>
+        <div class="post-title">{{ post.title }}</div>
+        <div class="post-ex">{{ post.excerpt }}</div>
+        <div class="post-foot">
+          {% if post.has_pdf %}<button class="btn btn-brick" onclick="openPdf('{{ post.title|escapejs }}', '{{ post.pdf.url }}')">Ver documento</button>{% endif %}
+          {% if is_admin %}
+          <a class="btn btn-ghost" href="{% url 'post_edit' post.pk %}">✎ Editar</a>
+          <form method="post" action="{% url 'post_delete' post.pk %}" onsubmit="return confirm('¿Eliminar esta noticia?');">{% csrf_token %}<button class="btn btn-ghost" type="submit">🗑</button></form>
+          {% endif %}
+          <form method="post" action="{% url 'post_react' post.pk %}" style="margin-left:auto">{% csrf_token %}
+            <button class="react" type="submit">↑ {{ post.reactions }}</button>
+          </form>
         </div>
       </div>
-      {% empty %}
-      <div class="card"><div class="empty">Todavía no hay publicaciones.{% if is_admin %} Usa el formulario de arriba para publicar la primera.{% endif %}</div></div>
-      {% endfor %}
     </div>
-    <div>
-      <div class="card rise">
-        <div class="card-label">Participación — formulario</div>
-        <p style="font-size:13px;color:var(--ink-soft);margin-bottom:13px;line-height:1.6">¿Tienes propuestas para la próxima asamblea? Compártelas con la dirección aquí.</p>
-        <form method="post" action="{% url 'feed' %}">{% csrf_token %}
-          <textarea class="ta" name="text" placeholder="Escribe tu propuesta o comentario..." required></textarea>
-          <div style="display:flex;gap:8px;margin-top:11px"><button class="btn btn-brick" type="submit">Enviar</button></div>
-        </form>
-      </div>
-    </div>
+    {% empty %}
+    <div class="card"><div class="empty">Todavía no hay publicaciones.{% if is_admin %} Usa el formulario de arriba para publicar la primera.{% endif %}</div></div>
+    {% endfor %}
   </div>
 </div>
+
+<!-- Botón flotante y pop-up de propuestas -->
+<div class="proposal-modal" id="proposal-modal" aria-hidden="true">
+  <button class="proposal-backdrop" type="button" onclick="closeProposal()" aria-label="Cerrar formulario"></button>
+  <div class="proposal-dialog" role="dialog" aria-modal="true" aria-labelledby="proposal-title">
+    <div class="proposal-head">
+      <div>
+        <div class="sec-eye">Participación</div>
+        <div class="proposal-title" id="proposal-title">Envía una <em>propuesta</em></div>
+      </div>
+      <button class="proposal-close" type="button" onclick="closeProposal()" aria-label="Cerrar">×</button>
+    </div>
+    <p class="proposal-copy">¿Tienes una idea o comentario para la próxima asamblea? Compártelo directamente con la administración.</p>
+    <form method="post" action="{% url 'feed' %}">
+      {% csrf_token %}
+      <label class="field-label" for="proposal-text">Tu propuesta</label>
+      <textarea class="ta proposal-textarea" id="proposal-text" name="text" placeholder="Escribe tu propuesta o comentario..." required></textarea>
+      <div class="proposal-actions">
+        <button class="btn btn-ghost" type="button" onclick="closeProposal()">Cancelar</button>
+        <button class="btn btn-brick" type="submit">Enviar propuesta →</button>
+      </div>
+    </form>
+  </div>
+</div>
+<button class="proposal-fab" id="proposal-button" type="button" onclick="openProposal()" title="Enviar propuesta" aria-controls="proposal-modal" aria-expanded="false">
+  <svg fill="none" viewBox="0 0 24 24" stroke-width="1.9"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span>Enviar propuesta</span>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openProposal(){
+  var modal = document.getElementById('proposal-modal');
+  var button = document.getElementById('proposal-button');
+  modal.classList.add('on');
+  modal.setAttribute('aria-hidden', 'false');
+  button.setAttribute('aria-expanded', 'true');
+  document.getElementById('proposal-text').focus();
+}
+function closeProposal(){
+  var modal = document.getElementById('proposal-modal');
+  var button = document.getElementById('proposal-button');
+  modal.classList.remove('on');
+  modal.setAttribute('aria-hidden', 'true');
+  button.setAttribute('aria-expanded', 'false');
+  button.focus();
+}
+document.addEventListener('keydown', function(event){
+  if(event.key === 'Escape' && document.getElementById('proposal-modal').classList.contains('on')){
+    closeProposal();
+  }
+});
+</script>
 {% endblock %}
