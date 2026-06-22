@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Reuniones{% endblock %}
+{% block topbar_title %}Reuniones{% endblock %}
+
+{% block content %}
+<div class="sec">
+  <div class="sec-h rise"><div class="sec-eye">Videoconferencia</div><div class="sec-t">Acceso a <em>reuniones</em></div></div>
+  <div class="g2 mb">
+    <div class="meet rise">
+      <div class="meet-ic" style="background:rgba(70,78,184,.12);color:#4b53b8"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3" stroke-linejoin="round"/></svg></div>
+      <div class="meet-n">Microsoft Teams</div>
+      <div class="meet-d">Reuniones oficiales de Lomarosa. Acceso exclusivo para socios con enlace seguro.</div>
+      <button class="btn btn-green" style="width:100%;justify-content:center" onclick="toast('Usa el enlace de la reunión programada','t-inf')">Reuniones en Teams</button>
+    </div>
+    <div class="meet rise">
+      <div class="meet-ic" style="background:rgba(21,101,192,.12);color:#1565C0"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3" stroke-linejoin="round"/></svg></div>
+      <div class="meet-n">Google Meet</div>
+      <div class="meet-d">Sesiones de capacitación y mesas de trabajo. Disponible para todos los socios.</div>
+      <button class="btn btn-green" style="width:100%;justify-content:center" onclick="toast('Usa el enlace de la reunión programada','t-inf')">Reuniones en Meet</button>
+    </div>
+  </div>
+  <div class="card rise">
+    <div class="card-label">Reuniones programadas</div>
+    {% for ev in events %}
+    <div class="ev {{ ev.color }}"><div class="ev-date"><div class="d">{{ ev.day }}</div><div class="m">{{ ev.month_abbr }}</div></div><div class="ev-info"><div class="ev-title">{{ ev.title }}</div><div class="ev-sub">{{ ev.get_platform_display }}{% if ev.time %} · {{ ev.time|time:"g:i A" }}{% endif %}</div></div>{% if ev.meet_url %}<a class="btn btn-brick" href="{{ ev.meet_url }}" target="_blank" rel="noopener">Unirse</a>{% else %}<span class="tag tag-{{ ev.color }}">{{ ev.get_tag_display }}</span>{% endif %}</div>
+    {% empty %}
+    <div class="empty">No hay reuniones con plataforma asignada.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

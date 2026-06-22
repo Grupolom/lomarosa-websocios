@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Noticias{% endblock %}
+{% block topbar_title %}Noticias{% endblock %}
+
+{% block content %}
+<div class="sec">
+  <div class="sec-h rise"><div class="sec-eye">Comunicaciones</div><div class="sec-t">Noticias & <em>publicaciones</em></div></div>
+
+  {% if is_admin %}
+  <div class="card rise mb">
+    <div class="card-label">✏ Publicar una noticia</div>
+    <form method="post" action="{% url 'post_create' %}" enctype="multipart/form-data">{% csrf_token %}
+      <div class="g2" style="gap:12px">
+        <div class="field" style="margin-bottom:10px"><label class="field-label">Título</label>{{ form.title }}</div>
+        <div class="field" style="margin-bottom:10px"><label class="field-label">Categoría</label>{{ form.category }}</div>
+      </div>
+      <div class="field" style="margin-bottom:10px"><label class="field-label">Texto</label>{{ form.excerpt }}</div>
+      <div class="g2" style="gap:12px">
+        <div class="field" style="margin-bottom:10px"><label class="field-label">Imagen (opcional)</label>{{ form.image }}</div>
+        <div class="field" style="margin-bottom:10px"><label class="field-label">PDF (opcional)</label>{{ form.pdf }}</div>
+      </div>
+      <button class="btn btn-brick" type="submit">Publicar ahora →</button>
+    </form>
+
+    <div class="cp-rule" style="margin:20px 0"></div>
+
+    <div class="card-label">📄 Importar desde Excel / CSV</div>
+    <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;line-height:1.6">
+      Sube un archivo con columnas <strong>Titulo</strong>, <strong>Texto</strong> y <strong>Categoria</strong>.
+      Todas las filas se publican de una vez. <a href="{% url 'post_import_template' %}" style="color:var(--brick);font-weight:700">Descargar plantilla de ejemplo</a>
+    </p>
+    <form method="post" action="{% url 'post_import' %}" enctype="multipart/form-data" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">{% csrf_token %}
+      {{ import_form.archivo }}
+      <button class="btn btn-green" type="submit">Importar</button>
+    </form>
+  </div>
+  {% endif %}
+
+  <div class="g2">
+    <div>
+      {% for post in posts %}
+      <div class="post rise">
+        <div class="post-thumb" style="background:linear-gradient(140deg,#EFCABB,#F4D7CB)">
+          {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}">{% else %}<div class="post-glyph" style="color:var(--terra)">{{ post.glyph }}</div>{% endif %}
+          <div class="post-cat">{{ post.get_category_display }}</div>
+          {% if post.has_pdf %}<div class="post-pdf">PDF</div>{% endif %}
+        </div>
+        <div class="post-body">
+          <div class="post-meta"><div class="post-av">{% if post.author %}{{ post.author.initials }}{% else %}AL{% endif %}</div><div class="post-author">{{ post.author.get_full_name|default:"Admin Lomarosa" }}</div><div class="post-date">{{ post.created_at|date:"j M Y" }}</div></div>
+          <div class="post-title">{{ post.title }}</div>
+          <div class="post-ex">{{ post.excerpt }}</div>
+          <div class="post-foot">
+            {% if post.has_pdf %}<button class="btn btn-brick" onclick="openPdf('{{ post.title|escapejs }}', '{{ post.pdf.url }}')">Ver documento</button>{% endif %}
+            {% if is_admin %}
+            <a class="btn btn-ghost" href="{% url 'post_edit' post.pk %}">✎ Editar</a>
+            <form method="post" action="{% url 'post_delete' post.pk %}" onsubmit="return confirm('¿Eliminar esta noticia?');">{% csrf_token %}<button class="btn btn-ghost" type="submit">🗑</button></form>
+            {% endif %}
+            <form method="post" action="{% url 'post_react' post.pk %}" style="margin-left:auto">{% csrf_token %}
+              <button class="react" type="submit">↑ {{ post.reactions }}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="card"><div class="empty">Todavía no hay publicaciones.{% if is_admin %} Usa el formulario de arriba para publicar la primera.{% endif %}</div></div>
+      {% endfor %}
+    </div>
+    <div>
+      <div class="card rise">
+        <div class="card-label">Participación — formulario</div>
+        <p style="font-size:13px;color:var(--ink-soft);margin-bottom:13px;line-height:1.6">¿Tienes propuestas para la próxima asamblea? Compártelas con la dirección aquí.</p>
+        <form method="post" action="{% url 'feed' %}">{% csrf_token %}
+          <textarea class="ta" name="text" placeholder="Escribe tu propuesta o comentario..." required></textarea>
+          <div style="display:flex;gap:8px;margin-top:11px"><button class="btn btn-brick" type="submit">Enviar</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

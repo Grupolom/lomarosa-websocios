@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel admin{% endblock %}
+{% block topbar_title %}Panel admin{% endblock %}
+
+{% block content %}
+<div class="sec">
+  <div class="sec-h rise"><div class="sec-eye">Administración</div><div class="sec-t">Panel de <em>control</em></div></div>
+  <div class="g4 mb2">
+    <div class="kpi rise d1"><div class="kpi-v" style="color:var(--brick)">{{ total_socios }}</div><div class="kpi-l">Socios totales</div><div class="bar" style="margin-top:14px"><div class="bar-f bf-terra" style="width:88%"></div></div></div>
+    <div class="kpi rise d2"><div class="kpi-v" style="color:var(--gold)">{{ total_acciones }}</div><div class="kpi-l">Acciones emitidas</div><div class="bar" style="margin-top:14px"><div class="bar-f bf-gold" style="width:62%"></div></div></div>
+    <div class="kpi rise d3"><div class="kpi-v" style="color:var(--moss)">{{ redeemed_today }}</div><div class="kpi-l">Cupones redimidos hoy</div><div class="bar" style="margin-top:14px"><div class="bar-f bf-moss" style="width:35%"></div></div></div>
+    <div class="kpi rise d4"><div class="kpi-v" style="color:var(--forest-2)">44</div><div class="kpi-l">Meta de socios</div><div class="bar" style="margin-top:14px"><div class="bar-f bf-green" style="width:100%"></div></div></div>
+  </div>
+  <div class="card rise">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><div class="card-label" style="margin-bottom:0;flex:1">Registro de socios</div><a class="btn btn-ghost" href="/django-admin/users/user/">Gestionar en Django</a><a class="btn btn-brick" href="/django-admin/users/user/add/">+ Nuevo socio</a></div>
+    <table class="tbl">
+      <thead><tr><th>Socio</th><th>Acciones</th><th>Cupón</th><th>Estado</th></tr></thead>
+      <tbody>
+        {% for m in members %}
+        <tr>
+          <td><span class="mav">{{ m.initials }}</span>{{ m.get_full_name|default:m.email }}</td>
+          <td><div class="sh">{{ m.acciones }}<div class="sh-tr"><div class="sh-f" style="width:60%"></div></div></div></td>
+          <td>{% if m.coupon %}<span class="mono" style="font-size:11px;color:var(--brick)">{{ m.coupon.code }}</span>{% else %}<span style="color:var(--ink-faint)">—</span>{% endif %}</td>
+          <td><span class="pill {% if m.is_active %}pill-ok{% else %}pill-off{% endif %}">{% if m.is_active %}Activo{% else %}Inactivo{% endif %}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4"><div class="empty">No hay socios registrados todavía.</div></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div style="padding-top:14px;font-size:12px;color:var(--ink-faint);text-align:center">Mostrando {{ members|length }} de {{ total_socios }} socios</div>
+  </div>
+</div>
+{% endblock %}

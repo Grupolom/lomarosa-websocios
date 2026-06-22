@@ -1,0 +1,74 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingresar · Portal de Socios Lomarosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,600&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/portal.css' %}">
+</head>
+<body>
+<div id="login">
+  <div class="login-blob blob-1"></div>
+  <div class="login-blob blob-2"></div>
+  <div class="login-card">
+
+    <div class="login-art">
+      <div class="art-top">
+        <div class="art-pill">● Portal de socios · Bogotá</div>
+        <h1 class="art-head">Campo bien<br>hecho,<br><em>cerdos bien criados.</em></h1>
+        <p class="art-desc">Tu espacio para documentos, circulares, asambleas y beneficios exclusivos como socio de Lomarosa.</p>
+      </div>
+      <div class="art-lockup">
+        <div class="art-logo">Lomarosa</div>
+        <div class="art-tag">campo bien hecho, cerdos bien criados</div>
+        <div class="art-stats">
+          <div class="art-stat"><div class="n">44</div><div class="l">Socios</div></div>
+          <div class="art-stat"><div class="n">28</div><div class="l">Puntos aliados</div></div>
+          <div class="art-stat"><div class="n">14</div><div class="l">Años</div></div>
+        </div>
+      </div>
+    </div>
+
+    <form class="login-form" method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <div class="lf-brand-row">
+        <div class="lf-mark">L</div>
+        <div>
+          <div class="lf-brand">Lomarosa</div>
+          <div class="lf-brand-sub">Portal de Socios</div>
+        </div>
+      </div>
+      <div class="lf-title">Ingresa a tu cuenta</div>
+      <div class="lf-sub">Acceso exclusivo para socios y administradores.</div>
+
+      {% if form.errors %}
+      <div class="lf-error">Correo o contraseña incorrectos. Verifica tus datos e inténtalo de nuevo.</div>
+      {% endif %}
+
+      <div class="role-row">
+        <button type="button" class="role-btn sel" onclick="selRole(this)">Socio</button>
+        <button type="button" class="role-btn" onclick="selRole(this)">Administrador</button>
+      </div>
+      <div class="field">
+        <label class="field-label" for="id_username">Correo</label>
+        <input class="field-input" type="email" name="username" id="id_username" value="{{ form.username.value|default:'' }}" placeholder="nombre@lomarosa.com" required autofocus>
+      </div>
+      <div class="field">
+        <label class="field-label" for="id_password">Contraseña</label>
+        <input class="field-input" type="password" name="password" id="id_password" placeholder="••••••••" required>
+      </div>
+      <input type="hidden" name="next" value="{{ next }}">
+      <button class="btn-enter" type="submit">Entrar al portal →</button>
+      <a class="lf-link" href="{% url 'password_reset' %}">¿Olvidaste tu contraseña?</a>
+    </form>
+
+  </div>
+</div>
+<script>
+function selRole(el){ document.querySelectorAll('.role-btn').forEach(function(b){ b.classList.remove('sel'); }); el.classList.add('sel'); }
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 
 
-class FeedConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'feed'
+class ArchivosConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.archivos"
+    label = "archivos"

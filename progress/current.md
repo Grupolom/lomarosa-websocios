@@ -1,28 +1,33 @@
 # Tarea actual
 
-## En progreso: Setup inicial del proyecto
+## En progreso: Pulido del MVP y despliegue a Railway
 
-**Fecha:** 17 de junio de 2026
-**Fase:** 0 — Setup y configuración base
+**Fecha:** 20 de junio de 2026
+**Fase:** entre Fase 1–4 (estructura + Feed + Calendario listos en local)
 
-### Completado
+### Estado
+El backend Django ya está montado y funcionando en local (SQLite). El diseño del
+mockup de Railway se integró como `base.html` + `static/css/portal.css` y todas las
+secciones renderizan con datos reales.
 
-- [x] Crear `requirements.txt` con dependencias base
-- [x] Instalar dependencias en venv
-- [x] Crear proyecto Django con `manage.py` y `config/`
-- [x] Crear carpeta `app/` y mover todo Django ahí (`config/`, `apps/`, `templates/`, `static/`, `manage.py`)
-- [x] Crear carpetas vacías para las 6 apps dentro de `app/apps/`
-- [x] Crear `CLAUDE.md`, `README.md`, `progress/`
+### Pendiente inmediato (para cumplir el HITO 20 jun en producción)
+- [ ] Crear servicio web + plugin PostgreSQL en Railway (proyecto `lomarosa-portal`)
+- [ ] Configurar variables: `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`, `DATABASE_URL` (auto)
+- [ ] Primer deploy con `Procfile` (migrate + collectstatic + gunicorn)
+- [ ] Ejecutar `seed_demo` o cargar los 44 socios reales (AU-04)
+- [ ] Verificar Feed y Calendario accesibles para los socios
 
-### Pendiente completar
+### Pendiente de módulos (siguientes fases)
+- [ ] Feed: subida real de imagen/PDF en posts + visor PDF.js inline (NT-02, NT-06)
+- [ ] Archivos: almacenamiento Cloudflare R2 con URL firmada (AR-02/03)
+- [ ] Descuentos: envío real de cupón por email + integración CRM Samuel (DC-03, DC-06)
+- [ ] Capitalización (Área interna admin) — CI-01..05 (aún sin app)
+- [ ] Recuperación de contraseña: configurar backend de email (AU-05)
+- [ ] About editable por admin (IN-03)
 
-- [ ] Correr `py manage.py startapp` para las 6 apps (users, feed, archivos, calendario, descuentos, core)
-- [ ] Separar `config/settings.py` en `base.py`, `development.py`, `production.py`
-- [ ] Crear `.env` y `.env.example`
-- [ ] Crear `Procfile` y `runtime.txt` para Railway
-- [ ] Configurar `INSTALLED_APPS` con las 6 apps
-- [ ] Primera migración y verificar `py manage.py runserver`
-
-### Siguiente tarea
-
-App `users` — modelo User extendido con roles Admin/Socio
+### Cómo correr en local
+```
+.venv\Scripts\python app\manage.py runserver
+# Login admin:  admin@lomarosa.com        / lomarosa2026
+# Login socio:  carlos.perez@lomarosa.com / lomarosa2026
+```

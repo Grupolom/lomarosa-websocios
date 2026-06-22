@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis archivos{% endblock %}
+{% block topbar_title %}Mis archivos{% endblock %}
+
+{% block content %}
+<div class="sec">
+  <div class="sec-h rise"><div class="sec-eye">Carpeta personal</div><div class="sec-t">Mis <em>archivos</em></div></div>
+  <div class="card rise mb">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div class="card-label" style="margin-bottom:0">{{ user.get_full_name|default:user.email }}{% if user.socio_code %} · Socio #{{ user.socio_code }}{% endif %}</div>
+    </div>
+    <div class="file-grid">
+      {% for doc in docs %}
+      <div class="file" onclick="openPdf('{{ doc.name|escapejs }}'{% if doc.pdf %}, '{{ doc.pdf.url }}'{% endif %})">
+        <div class="file-ic"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l3 3v15H6z" stroke-linejoin="round"/></svg></div>
+        <div class="file-name">{{ doc.name }}</div>
+        <div class="file-size">PDF{% if doc.size_label %} · {{ doc.size_label }}{% endif %}</div>
+        <div class="file-st {% if doc.status == 'activo' %}st-act{% else %}st-ok{% endif %}">{{ doc.get_status_display }}</div>
+      </div>
+      {% empty %}
+      <div class="empty" style="grid-column:1/-1">El administrador aún no ha cargado documentos en tu carpeta.</div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="coming"><strong>Recuerda —</strong> por seguridad solo puedes <strong>visualizar</strong> tus documentos. La carga y gestión de archivos la realiza únicamente el administrador.</div>
+</div>
+{% endblock %}

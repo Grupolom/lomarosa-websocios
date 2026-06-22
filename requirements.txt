@@ -1,8 +1,11 @@
-django>=5.1
+Django>=5.1,<5.3
 gunicorn
 psycopg2-binary
-django-storages[s3]
-boto3
+dj-database-url
 whitenoise
 django-htmx
 python-dotenv
+Pillow
+django-storages[s3]
+boto3
+openpyxl

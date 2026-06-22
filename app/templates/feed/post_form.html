@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+{% block topbar_title %}Noticias{% endblock %}
+
+{% block content %}
+<div class="sec">
+  <div class="sec-h rise"><div class="sec-eye">Comunicaciones</div><div class="sec-t">{{ titulo }}</div></div>
+  <div class="card rise" style="max-width:640px">
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+      <div class="field" style="margin-bottom:12px"><label class="field-label">Título</label>{{ form.title }}</div>
+      <div class="field" style="margin-bottom:12px"><label class="field-label">Categoría</label>{{ form.category }}</div>
+      <div class="field" style="margin-bottom:12px"><label class="field-label">Texto</label>{{ form.excerpt }}</div>
+      <div class="field" style="margin-bottom:12px"><label class="field-label">Contenido ampliado (opcional)</label>{{ form.body }}</div>
+      <div class="g2" style="gap:12px">
+        <div class="field" style="margin-bottom:12px"><label class="field-label">Imagen (opcional)</label>{{ form.image }}{% if post.image %}<div style="font-size:11px;color:var(--ink-faint);margin-top:4px">Actual: {{ post.image.name }}</div>{% endif %}</div>
+        <div class="field" style="margin-bottom:12px"><label class="field-label">PDF (opcional)</label>{{ form.pdf }}{% if post.pdf %}<div style="font-size:11px;color:var(--ink-faint);margin-top:4px">Actual: {{ post.pdf.name }}</div>{% endif %}</div>
+      </div>
+      {% if form.errors %}<div class="lf-error">Revisa los campos marcados.</div>{% endif %}
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-brick" type="submit">Guardar</button>
+        <a class="btn btn-ghost" href="{% url 'feed' %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

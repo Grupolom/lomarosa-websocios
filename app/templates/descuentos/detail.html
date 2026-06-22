@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi cupón{% endblock %}
+{% block topbar_title %}Mi cupón{% endblock %}
+
+{% block content %}
+<div class="sec">
+  <div class="sec-h rise"><div class="sec-eye">Beneficios</div><div class="sec-t">Tu <em>cupón</em> de descuento</div></div>
+  <div class="g2">
+    <div>
+      {% if coupon %}
+      <div class="coupon rise mb">
+        <div class="cp-eye">Código exclusivo</div>
+        <div class="cp-code">{{ coupon.code }}</div>
+        <div class="cp-pct">{{ coupon.percent }}<span>% off</span></div>
+        <div class="cp-where">{{ coupon.where }}</div>
+        <div class="cp-rule"></div>
+        <div class="cp-track-l"><span>{{ coupon.usage_pct }}% de canjes usados</span><span>{{ coupon.redeemed_count }} / {{ coupon.max_redemptions }}</span></div>
+        <div class="track"><div class="track-f" style="width:{{ coupon.usage_pct }}%"></div></div>
+        {% if coupon.valid_until %}<div class="cp-exp">Válido hasta el {{ coupon.valid_until|date:"j \d\e F Y" }}</div>{% endif %}
+        <div style="display:flex;gap:8px;margin-top:18px">
+          <button class="btn btn-brick" style="flex:1" type="button" onclick="copyText('{{ coupon.code|escapejs }}')">Copiar código</button>
+          <form method="post" action="{% url 'discounts' %}">{% csrf_token %}<button class="btn btn-ghost" type="submit">Enviar por email</button></form>
+        </div>
+      </div>
+      {% else %}
+      <div class="card rise mb"><div class="empty">Aún no tienes un cupón asignado. El administrador puede generarlo desde el panel.</div></div>
+      {% endif %}
+    </div>
+    <div class="card rise">
+      <div class="card-label">Historial de canjes</div>
+      <table class="tbl">
+        <thead><tr><th>Establecimiento</th><th>Fecha</th><th>Estado</th></tr></thead>
+        <tbody>
+          {% for r in history %}
+          <tr><td>{{ r.establishment }}</td><td>{{ r.date|date:"j M" }}</td><td><span class="pill {% if r.status == 'canjeado' %}pill-ok{% elif r.status == 'pendiente' %}pill-warn{% else %}pill-off{% endif %}">{{ r.get_status_display }}</span></td></tr>
+          {% empty %}
+          <tr><td colspan="3"><div class="empty">Sin canjes registrados.</div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

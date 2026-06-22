@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ── Lomarosa / Django ──
+app/staticfiles/
+app/media/
+progress/_deploy_snapshot.html

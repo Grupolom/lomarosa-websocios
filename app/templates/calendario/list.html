@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Calendario{% endblock %}
+{% block topbar_title %}Calendario{% endblock %}
+
+{% block content %}
+<div class="sec">
+  <div class="sec-h rise"><div class="sec-eye">Agenda</div><div class="sec-t">Calendario <em>Lomarosa</em></div></div>
+  <div class="g2">
+    <div class="card rise">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <a class="btn btn-ghost" style="padding:7px 11px" href="?y={{ prev.y }}&m={{ prev.m }}">‹</a>
+        <div class="serif" style="font-size:16px;font-weight:700;color:var(--forest)">{{ month_name }} {{ year }}</div>
+        <a class="btn btn-ghost" style="padding:7px 11px" href="?y={{ next.y }}&m={{ next.m }}">›</a>
+      </div>
+      <div class="cal">
+        <div class="cal-hd">D</div><div class="cal-hd">L</div><div class="cal-hd">M</div><div class="cal-hd">X</div><div class="cal-hd">J</div><div class="cal-hd">V</div><div class="cal-hd">S</div>
+        {% for c in cells %}
+        <div class="cal-d{% if not c.in_month %} dim{% elif c.today %} today{% endif %}{% if c.color %} ev-day{% endif %}">{{ c.num }}{% if c.color %}<div class="pip {{ c.color }}"></div>{% endif %}</div>
+        {% endfor %}
+      </div>
+      <div class="cal-legend">
+        <span><span class="lg-dot" style="background:var(--terra)"></span>Asamblea</span>
+        <span><span class="lg-dot" style="background:var(--gold)"></span>Evento</span>
+        <span><span class="lg-dot" style="background:var(--forest-2)"></span>Reunión</span>
+      </div>
+    </div>
+    <div class="card rise">
+      <div class="card-label">Próximos eventos</div>
+      {% for ev in upcoming %}
+      <div class="ev {{ ev.color }}"><div class="ev-date"><div class="d">{{ ev.day }}</div><div class="m">{{ ev.month_abbr }}</div></div><div class="ev-info"><div class="ev-title">{{ ev.title }}</div><div class="ev-sub">{{ ev.location }}{% if ev.time %} · {{ ev.time|time:"g:i A" }}{% endif %}</div></div>{% if ev.meet_url %}<a class="btn btn-brick" href="{{ ev.meet_url }}" target="_blank" rel="noopener">Unirse</a>{% else %}<div class="tag tag-{{ ev.color }}">{{ ev.get_tag_display }}</div>{% endif %}</div>
+      {% empty %}
+      <div class="empty">No hay eventos próximos.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

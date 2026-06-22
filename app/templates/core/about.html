@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Aliados{% endblock %}
+{% block topbar_title %}Puntos aliados{% endblock %}
+
+{% block content %}
+<div class="sec">
+  <div class="sec-h rise"><div class="sec-eye">La empresa</div><div class="sec-t">Puntos <em>aliados</em></div></div>
+  <div class="about-hero rise">
+    <div class="about-in">
+      <div class="about-tag">Sobre Lomarosa</div>
+      <div class="about-logo">Lomarosa</div>
+      <div class="about-slogan">campo bien hecho, cerdos bien criados</div>
+      <p class="about-p">Somos productores de carne de cerdo con trazabilidad completa: del campo a tu mesa, sin inyección de agua y con bienestar animal. Hoy somos una red de 44 socios y 28 puntos aliados que mueven la industria cárnica de Bogotá con calidad y formalización.</p>
+      <div class="about-kpis">
+        <div class="about-k"><div class="n" style="color:var(--brick)">44</div><div class="l">Socios activos</div></div>
+        <div class="about-k"><div class="n" style="color:var(--gold)">28</div><div class="l">Puntos aliados</div></div>
+        <div class="about-k"><div class="n">0%</div><div class="l">Carne inyectada</div></div>
+        <div class="about-k"><div class="n">Bogotá</div><div class="l">Sede principal</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="g3">
+    {% for r in restaurants %}
+    <div class="resto rise"><div class="resto-art">{{ r.emoji }}</div><div class="resto-b"><div class="resto-n">{{ r.name }}</div><div class="resto-z">{{ r.zone }}</div><div class="resto-s">{{ r.stars }}</div></div></div>
+    {% empty %}
+    <div class="card" style="grid-column:1/-1"><div class="empty">Aún no se han registrado puntos aliados.</div></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
